@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gamb1t0_ · Lima 2031</title>
+<meta name="description" content="El juego ya empezó. Lima 2031.">
+<meta property="og:title" content="gamb1t0_">
+<meta property="og:description" content="> freedom.exe /run">
+<meta property="og:image" content="caballo.png">
+<link rel="icon" type="image/png" href="caballo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:#0A0A14;
+  color:#F0B429;
+  font-family:'Fira Code','Courier New',monospace;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* ── PÁGINA PRINCIPAL ── */
+#page-main{
+  width:100%;
+  max-width:440px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.horse{
+  width:120px;
+  height:auto;
+  object-fit:contain;
+  margin-bottom:20px;
+  filter:drop-shadow(0 0 20px rgba(240,180,41,.3));
+}
+
+.logo{
+  font-size:clamp(32px,8vw,52px);
+  font-weight:700;
+  color:#F0B429;
+  letter-spacing:.16em;
+  line-height:1;
+  margin-bottom:10px;
+  display:flex;
+  align-items:baseline;
+}
+
+.cursor{animation:blink 1.06s step-start infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.tagline{
+  font-size:12px;
+  color:rgba(240,180,41,.5);
+  letter-spacing:.12em;
+  margin-bottom:26px;
+}
+
+.status{
+  font-size:10px;
+  color:rgba(240,180,41,.55);
+  border:.5px solid rgba(240,180,41,.2);
+  border-radius:20px;
+  padding:5px 16px;
+  letter-spacing:.1em;
+  margin-bottom:26px;
+}
+
+/* ── CONTADOR ── */
+.counter{
+  display:flex;
+  gap:8px;
+  align-items:flex-end;
+  margin-bottom:34px;
+}
+.cu{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cn{
+  font-size:clamp(26px,7vw,40px);
+  font-weight:700;
+  color:#F0B429;
+  line-height:1;
+  min-width:2ch;
+  text-align:center;
+}
+.cl{font-size:9px;color:rgba(240,180,41,.35);letter-spacing:.08em;text-transform:uppercase}
+.cs{
+  font-size:clamp(22px,6vw,34px);
+  font-weight:300;
+  color:rgba(240,180,41,.25);
+  line-height:1;
+  padding-bottom:13px;
+}
+
+/* ── FORM ── */
+.section-title{
+  font-size:9px;
+  color:rgba(240,180,41,.3);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  align-self:flex-start;
+  margin-bottom:10px;
+}
+
+.form{width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+
+.field{display:flex;flex-direction:column;gap:5px}
+
+.field-label{
+  font-size:9px;
+  color:rgba(240,180,41,.3);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  transition:color .2s;
+}
+.field-label .opt{color:rgba(240,180,41,.18);margin-left:5px}
+.field:focus-within .field-label{color:rgba(240,180,41,.75)}
+
+.field input,.field select{
+  background:rgba(255,255,255,.04);
+  border:.5px solid rgba(240,180,41,.15);
+  border-radius:6px;
+  padding:10px 14px;
+  font-family:'Fira Code',monospace;
+  font-size:12px;
+  color:rgba(255,255,255,.75);
+  width:100%;
+  outline:none;
+  transition:border-color .2s;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.field input::placeholder{color:rgba(255,255,255,.18)}
+.field input:focus,.field select:focus{border-color:rgba(240,180,41,.5)}
+.field select{cursor:pointer;background-image:none}
+.field select option{background:#0A0A14;color:rgba(255,255,255,.75)}
+
+.date-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* ── BOTÓN ── */
+.btn{
+  width:100%;
+  background:#F0B429;
+  color:#0A0A14;
+  font-family:'Fira Code',monospace;
+  font-size:clamp(15px,4vw,20px);
+  font-weight:700;
+  letter-spacing:.08em;
+  border:none;
+  border-radius:6px;
+  padding:16px;
+  cursor:pointer;
+  transition:opacity .2s,transform .1s;
+  margin-top:6px;
+}
+.btn:hover{opacity:.9}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── MENSAJES ERROR ── */
+.msg-err{
+  width:100%;
+  padding:9px 14px;
+  border-radius:6px;
+  font-size:11px;
+  color:rgba(240,120,100,.9);
+  background:rgba(220,80,60,.1);
+  border:.5px solid rgba(220,80,60,.22);
+  text-align:center;
+  display:none;
+  margin-top:6px;
+}
+
+/* ── SOCIAL ── */
+.social{display:flex;gap:22px;align-items:center;margin-top:10px}
+.social a{
+  font-size:10px;
+  color:rgba(240,180,41,.3);
+  text-decoration:none;
+  letter-spacing:.06em;
+  border-bottom:.5px solid rgba(240,180,41,.12);
+  padding-bottom:1px;
+  transition:color .2s;
+}
+.social a:hover{color:rgba(240,180,41,.65)}
+
+.divider{width:100%;height:.5px;background:rgba(240,180,41,.1);margin:10px 0 16px}
+
+/* ── PÁGINA OJOS ── */
+#page-eyes{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:100;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.eyes-img{
+  width:100%;
+  max-width:700px;
+  height:auto;
+  opacity:0;
+  transition:opacity .15s ease-in;
+}
+
+/* ── PÁGINA FINAL ── */
+#page-final{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0A0A14;
+  z-index:100;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  padding:40px 20px;
+}
+
+.final-counter{
+  display:flex;
+  gap:8px;
+  align-items:flex-end;
+}
+
+.pr3parat3{
+  font-size:clamp(22px,6vw,36px);
+  font-weight:700;
+  color:#F0B429;
+  letter-spacing:.14em;
+  display:flex;
+  align-items:baseline;
+}
+
+.final-msg{
+  font-size:11px;
+  color:rgba(240,180,41,.4);
+  letter-spacing:.1em;
+  text-align:center;
+  line-height:1.8;
+  max-width:320px;
+}
+
+.final-social{display:flex;gap:20px;margin-top:8px}
+.final-social a{
+  font-size:10px;
+  color:rgba(240,180,41,.3);
+  text-decoration:none;
+  letter-spacing:.06em;
+  border-bottom:.5px solid rgba(240,180,41,.12);
+  padding-bottom:1px;
+}
+
+/* ── CICADA ── */
+.hidden-cicada{
+  position:fixed;
+  bottom:12px;
+  left:0;right:0;
+  text-align:center;
+  font-size:9px;
+  color:rgba(240,180,41,.055);
+  letter-spacing:.03em;
+  pointer-events:none;
+  user-select:none;
+  z-index:1;
+}
+
+@media(max-width:400px){
+  .counter,.final-counter{gap:5px}
+  .cs{padding-bottom:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     PÁGINA PRINCIPAL
+══════════════════════════════════════════ -->
+<div id="page-main">
+
+  <img src="caballo.png" alt="gamb1t0" class="horse">
+
+  <div class="logo">gamb1t0<span class="cursor" id="cur-main">_</span></div>
+  <div class="tagline">&gt; freedom.exe /run</div>
+  <div class="status">// en construcción &nbsp;·&nbsp; Lima 2031</div>
+
+  <div class="counter">
+    <div class="cu"><div class="cn" id="cd-d">--</div><div class="cl">días</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="cd-h">--</div><div class="cl">horas</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="cd-m">--</div><div class="cl">min</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="cd-s">--</div><div class="cl">seg</div></div>
+  </div>
+
+  <div class="section-title">// pre-registro · GI Force</div>
+
+  <form class="form" id="form" novalidate>
+
+    <div class="field">
+      <label class="field-label" for="correo">correo electrónico<span class="opt"> · obligatorio</span></label>
+      <input type="email" id="correo" placeholder="tu@correo.com" required autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label class="field-label">fecha de nacimiento<span class="opt"> · obligatorio</span></label>
+      <div class="date-row">
+        <input type="number" id="dia" placeholder="día" min="1" max="31" required>
+        <input type="number" id="mes" placeholder="mes" min="1" max="12" required>
+        <input type="number" id="anio" placeholder="año" min="1980" max="2015" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="usuario">nombre de usuario<span class="opt"> · opcional</span></label>
+      <input type="text" id="usuario" placeholder="gi_force_xxx" maxlength="30" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="distrito">distrito<span class="opt"> · opcional</span></label>
+      <select id="distrito">
+        <option value="">selecciona...</option>
+        <optgroup label="Lima Norte">
+          <option>Comas</option><option>Los Olivos</option><option>Independencia</option>
+          <option>Carabayllo</option><option>Puente Piedra</option><option>San Martín de Porres</option>
+        </optgroup>
+        <optgroup label="Lima Este">
+          <option>San Juan de Lurigancho</option><option>Ate</option><option>El Agustino</option>
+          <option>Santa Anita</option><option>Lurigancho</option>
+        </optgroup>
+        <optgroup label="Lima Sur">
+          <option>Villa El Salvador</option><option>Villa María del Triunfo</option>
+          <option>San Juan de Miraflores</option><option>Chorrillos</option>
+        </optgroup>
+        <optgroup label="Lima Centro">
+          <option>Cercado de Lima</option><option>La Victoria</option><option>Lince</option>
+          <option>Breña</option><option>Rímac</option>
+        </optgroup>
+        <optgroup label="Lima Moderna">
+          <option>Miraflores</option><option>San Isidro</option><option>Surco</option>
+          <option>Barranco</option><option>San Borja</option><option>La Molina</option>
+        </optgroup>
+        <optgroup label="Provincias Perú">
+          <option>Arequipa</option><option>Trujillo</option><option>Chiclayo</option>
+          <option>Piura</option><option>Cusco</option><option>Iquitos</option>
+          <option>Otra provincia</option>
+        </optgroup>
+        <optgroup label="Exterior">
+          <option>Fuera del Perú</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="pais">país<span class="opt"> · opcional</span></label>
+      <input type="text" id="pais" placeholder="Perú" value="Perú" autocomplete="country-name">
+    </div>
+
+    <button type="submit" class="btn" id="btn">un1rm3</button>
+
+  </form>
+
+  <div class="msg-err" id="msg-err"></div>
+
+  <div class="divider"></div>
+  <div class="social">
+    <a href="https://www.tiktok.com/@somosgambito" target="_blank" rel="noopener">tiktok</a>
+    <a href="https://www.instagram.com/somosgambito.oficial" target="_blank" rel="noopener">instagram</a>
+    <a href="https://discord.gg/5mZtfFpJg" target="_blank" rel="noopener">discord</a>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     PÁGINA OJOS — flash de GI
+══════════════════════════════════════════ -->
+<div id="page-eyes">
+  <img src="ojos-gi.png" alt="" class="eyes-img" id="eyes-img" aria-hidden="true">
+</div>
+
+<!-- ══════════════════════════════════════════
+     PÁGINA FINAL — pr3parat3_
+══════════════════════════════════════════ -->
+<div id="page-final">
+
+  <div class="final-counter">
+    <div class="cu"><div class="cn" id="fd-d">--</div><div class="cl">días</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="fd-h">--</div><div class="cl">horas</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="fd-m">--</div><div class="cl">min</div></div>
+    <div class="cs">:</div>
+    <div class="cu"><div class="cn" id="fd-s">--</div><div class="cl">seg</div></div>
+  </div>
+
+  <div class="pr3parat3">pr3parat3<span class="cursor" id="cur-final">_</span></div>
+
+  <div class="final-msg" id="final-msg">
+    GI registró tu nombre.<br>
+    El tablero ya sabe que llegaste.
+  </div>
+
+  <div class="divider" style="max-width:300px"></div>
+
+  <div class="final-social">
+    <a href="https://www.tiktok.com/@somosgambito" target="_blank" rel="noopener">tiktok</a>
+    <a href="https://www.instagram.com/somosgambito.oficial" target="_blank" rel="noopener">instagram</a>
+    <a href="https://discord.gg/5mZtfFpJg" target="_blank" rel="noopener">discord</a>
+  </div>
+
+</div>
+
+<!-- CICADA -->
+<div class="hidden-cicada">3scr1be a gi.gambito@gmail.com · s1 3nc0ntr4st3 3st0, ya sabes qué hacer</div>
+
+<script>
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbyOx_wAaW3jlWMJT36Pr52xd86GivGc0lpghmc9tN9FrQSDYFJb1z8q4f9mJJUnnh2x/exec';
+const LAUNCH  = new Date('2026-10-29T17:53:00-05:00').getTime();
+
+function pad(n){return String(n).padStart(2,'0')}
+
+function calcCD(){
+  const diff = LAUNCH - Date.now();
+  if(diff<=0) return {d:'00',h:'00',m:'00',s:'00'};
+  return {
+    d: pad(Math.floor(diff/86400000)),
+    h: pad(Math.floor((diff%86400000)/3600000)),
+    m: pad(Math.floor((diff%3600000)/60000)),
+    s: pad(Math.floor((diff%60000)/1000))
+  };
+}
+
+function updateCounters(){
+  const t = calcCD();
+  ['d','h','m','s'].forEach(k=>{
+    const a=document.getElementById('cd-'+k);
+    const b=document.getElementById('fd-'+k);
+    if(a) a.textContent=t[k];
+    if(b) b.textContent=t[k];
+  });
+}
+updateCounters();
+setInterval(updateCounters,1000);
+
+// ── SONIDO RELÁMPAGO ──────────────────────
+function playLightning(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const buf = ctx.createBuffer(1,ctx.sampleRate*0.35,ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for(let i=0;i<data.length;i++){
+      const env = i<2000 ? i/2000 : Math.exp(-(i-2000)/8000);
+      data[i] = (Math.random()*2-1) * env;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.7;
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+  }catch(e){}
+}
+
+// ── SECUENCIA POST-REGISTRO ───────────────
+function showEyes(finalMsg){
+  const pageMain  = document.getElementById('page-main');
+  const pageEyes  = document.getElementById('page-eyes');
+  const pageFinal = document.getElementById('page-final');
+  const eyesImg   = document.getElementById('eyes-img');
+  const fmsg      = document.getElementById('final-msg');
+
+  if(finalMsg) fmsg.innerHTML = finalMsg;
+
+  // Oculta main
+  pageMain.style.display = 'none';
+
+  // Muestra página ojos
+  pageEyes.style.display = 'flex';
+  playLightning();
+
+  // Fade in imagen
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{ eyesImg.style.opacity='1'; });
+  });
+
+  // Tras 2.3s → transición a página final
+  setTimeout(()=>{
+    eyesImg.style.transition = 'opacity .4s ease-out';
+    eyesImg.style.opacity = '0';
+    setTimeout(()=>{
+      pageEyes.style.display = 'none';
+      pageFinal.style.display = 'flex';
+    }, 420);
+  }, 2300);
+}
+
+// ── FORM SUBMIT ───────────────────────────
+document.getElementById('form').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const correo = document.getElementById('correo').value.trim();
+  const dia    = parseInt(document.getElementById('dia').value)||0;
+  const mes    = parseInt(document.getElementById('mes').value)||0;
+  const anio   = parseInt(document.getElementById('anio').value)||0;
+  const usuario= document.getElementById('usuario').value.trim();
+  const distrito=document.getElementById('distrito').value;
+  const pais   = document.getElementById('pais').value.trim()||'Perú';
+
+  const errEl = document.getElementById('msg-err');
+  errEl.style.display='none';
+
+  if(!correo||!correo.includes('@')){
+    errEl.textContent='// correo inválido · intenta de nuevo';
+    errEl.style.display='block'; return;
+  }
+  if(!dia||!mes||!anio||anio<1980||anio>2015){
+    errEl.textContent='// fecha de nacimiento inválida · verifica';
+    errEl.style.display='block'; return;
+  }
+
+  const hoy   = new Date();
+  let edad    = hoy.getFullYear()-anio;
+  if(hoy.getMonth()+1<mes||(hoy.getMonth()+1===mes&&hoy.getDate()<dia)) edad--;
+
+  const btn = document.getElementById('btn');
+  btn.disabled=true;
+  btn.textContent='// procesando...';
+
+  // Menor de 15 — lista de espera
+  if(edad<15){
+    await enviar({correo,dia,mes,anio,usuario,distrito,pais,edad,fuente:'landing_web'});
+    showEyes(
+      `GI registró tu nombre.<br><br>` +
+      `Aún no es tu momento.<br>` +
+      `El tablero te espera en ${anio+15}.<br><br>` +
+      `<span style="color:rgba(240,180,41,.4);font-size:10px">— Gambito</span>`
+    );
+    return;
+  }
+
+  await enviar({correo,dia,mes,anio,usuario,distrito,pais,edad,fuente:'landing_web'});
+
+  const msg = edad<=17
+    ? `GI registró tu nombre.<br>El tablero ya sabe que llegaste.<br><br><span style="color:rgba(240,180,41,.4);font-size:10px">Únete a la GI Force en Discord.</span>`
+    : `GI registró tu nombre.<br>El tablero ya sabe que llegaste.<br><br><span style="color:rgba(240,180,41,.4);font-size:10px">Bienvenido a la resistencia.</span>`;
+
+  showEyes(msg);
+});
+
+async function enviar(datos){
+  try{
+    await fetch(WEBHOOK,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(datos)
+    });
+  }catch(e){}
+}
+</script>
+
+</body>
+</html>
